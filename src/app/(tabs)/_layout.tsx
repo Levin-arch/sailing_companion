@@ -7,11 +7,11 @@ import { useThemeColors } from '@/constants/useThemeColors';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
-const tabIcon =
-  (name: IconName) =>
-  ({ color, size }: { color: ColorValue; size: number }) => (
-    <Ionicons name={name} color={color as string} size={size} />
-  );
+function tabIcon(name: IconName) {
+  return function TabIcon({ color, size }: { color: ColorValue; size: number }) {
+    return <Ionicons name={name} color={color as string} size={size} />;
+  };
+}
 
 export default function TabLayout() {
   const colors = useThemeColors();
