@@ -395,10 +395,10 @@ Storage proposal: SQLite on the device (`expo-sqlite`) for boats, plans, trips a
 - **Boats:** dedicated section with several boat profiles, one active. No polar diagrams available: speeds are estimated from the boat data and improved from recorded trips.
 - **Language:** German only for v1, fully prepared for English.
 - **Later versions:** official weather and gale warnings; photos in the logbook.
+- **First region pack:** Western Baltic; the other regions follow later.
+- **Pack hosting:** region packs are published as GitHub Releases of this repository.
+- **Depth margins:** defaults of 1.0 m under the keel in the Baltic and 2.0 m in the Mediterranean.
 
 ## Open questions
 
-1. **Region packs:** which regions first? A suggestion is to start with the one you sail most (e.g. Western Baltic) and add the others later, since building the chart data pipeline is a big part of the work.
-2. **Pack hosting:** is it OK to publish the generated region packs as GitHub Releases of this repository (free, but public)? Or should they be stored somewhere private?
-3. **Depth safety margin defaults:** are 1.0 m under the keel (Baltic) and 2.0 m (Mediterranean) good defaults for you?
-4. **Harbour approach:** is it OK that routes end at the harbour entrance and the last few hundred metres are left to the skipper, given the resolution of the open depth data?
+1. **Harbour approach:** how to handle the last part into harbours and narrow channels, where EMODnet's ~115 m depth grid is too coarse. Options under discussion: higher-resolution national depth data (Denmark 50 m, Finland vector depth areas, German BSH model), routing along buoyed fairways and recommended tracks from OpenSeaMap, and handing the route to a chart app with licensed charts for the approach.
