@@ -129,12 +129,12 @@ Hour-by-hour table for one day: wind, gusts, direction, waves, weather, pressure
 1. **Chart map:** calculated route, coloured by sail (blue) / motor (grey) and with wind arrows along the way; turning points; sea marks and depths underneath; optional comparison line for the straight route.
 2. **Summary card:** recommended departure, ETA, distance, duration, hours under sail / under motor, fuel needed vs. tank, max wind and waves on the way, **minimum depth under keel**.
 3. **Limit warnings** (if any): "Gusts 32 kn between 15:00 and 17:00 near waypoint 3, above your limit of 25 kn", with suggestions (leave 3 h earlier, stop in harbour X).
-4. **Depth & chart notes** (if any): sections with little water under the keel, sections with coarse depth data, traffic lanes crossed, bridges with their clearance. The **harbour approach** at the end is marked "navigate by sight and official chart".
+4. **Depth & chart notes** (if any): sections with little water under the keel, sections with coarse depth data, traffic lanes crossed, bridges with their clearance. The route ends at the **harbour entrance**; the approach is done in Navionics.
 5. **Departure window preview:** small chart of passage duration and max wind over departure times; "See all" → Departure window.
 6. **Legs list:** per leg: course, distance, sail or motor, true wind angle and speed, waves, minimum depth, expected boat speed, ETA. Tap → Leg detail.
 7. Data basis: "Forecast from today 06:00 UTC", chart pack and its data date, and a **Recalculate** button.
 
-**Actions:** Recalculate, Edit inputs (→ New plan with values), Compare with straight route, Open checklist, **Start trip** (→ Active trip with this route), Share/Export (GPX of the route).
+**Actions:** **Export to Navionics** (GPX via the share sheet), Recalculate, Edit inputs (→ New plan with values), Compare with straight route, Open checklist, **Start trip** (→ Active trip with this route).
 
 **States:** no route possible within limits → the closest result plus a clear explanation of which limit blocks it and when; outdated forecast → banner "Forecast is 9 h old, recalculate".
 

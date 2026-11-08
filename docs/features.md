@@ -6,6 +6,8 @@
 
 Sailing Companion is a phone app for **cruising sailors**: people who take their own or a chartered boat on day trips and multi-day coastal passages. It helps them decide whether and when to go, calculates the best route for their boat, the forecast and the chart, keeps a logbook and lets them sleep well at anchor.
 
+The app is a **planning tool**: it's used before and between passages to plan the route and the departure. **Navigation on board is done in Navionics**; the planned route is exported to Navionics as a GPX file. The logbook and anchor alarm are used on board alongside Navionics.
+
 The app is a **free, personal project**. It is not sold and has no accounts, ads or subscriptions. It is installed on the owner's phones via EAS internal distribution; a public App Store / Play Store release is not planned for v1.
 
 ### Sailing areas
@@ -190,11 +192,13 @@ Which regional models give the best results in each area should be checked again
 - **Limit warnings:** where and when the comfort limits are exceeded; suggestion to leave earlier/later or to stop at an intermediate harbour.
 - **Depth warnings:** sections where the depth under keel is close to the minimum, or where the chart data is coarse (see [Map & chart data](#7-map--chart-data)).
 - **Manual comparison:** the sailor can also draw a fixed route; the app then calculates timing, sail/motor and conditions for it, and warns where it crosses shallow water or restricted areas.
-- **Harbour approach:** the last part into a harbour or marina is usually narrower than the chart data's resolution. The route ends at the harbour entrance (or the nearest navigable grid point) and marks the approach "navigate by sight and official chart".
+- **Harbour approach:** the last part into a harbour or marina is usually narrower than the chart data's resolution. The route ends at the harbour entrance (or the nearest navigable grid point); the approach is done in Navionics.
+- **Export to Navionics:** export the planned route (turning points with names and ETAs) as a GPX file via the share sheet, for import into Navionics. Re-export after a recalculation.
 - Recalculate with the latest forecast; show when the saved calculation is based on an old forecast.
 - Night: respect "night sailing allowed" from the boat preferences (plan to arrive before dark, or warn).
 - Checklists: editable pre-departure checklist with a default template (weather checked, crew briefing, life jackets, engine, fuel, water, VHF, float plan shared…). Reset per trip.
 - Start trip from a plan: starts a logbook recording with the planned route attached.
+- The app does not give turn-by-turn navigation; it's a planning tool.
 - Disclaimer: routes are based on open chart data and forecasts; they are not a replacement for official charts and the skipper's judgement.
 
 ### Technical notes
@@ -212,6 +216,7 @@ Which regional models give the best results in each area should be checked again
 - The departure window shows at least 24 departure times.
 - When the comfort limits can't be met, the app shows where and when instead of silently ignoring them.
 - Saved plans, their routes and the chart data are available offline.
+- An exported route imports into Navionics with all turning points in the right order.
 
 ---
 
@@ -398,7 +403,8 @@ Storage proposal: SQLite on the device (`expo-sqlite`) for boats, plans, trips a
 - **First region pack:** Western Baltic; the other regions follow later.
 - **Pack hosting:** region packs are published as GitHub Releases of this repository.
 - **Depth margins:** defaults of 1.0 m under the keel in the Baltic and 2.0 m in the Mediterranean.
+- **Planning, not navigation:** the app plans routes ahead; navigation on board is done in Navionics. Routes are exported as GPX. EMODnet depth data (~115 m grid) is precise enough for this; routes end at the harbour entrance.
 
 ## Open questions
 
-1. **Harbour approach:** how to handle the last part into harbours and narrow channels, where EMODnet's ~115 m depth grid is too coarse. Options under discussion: higher-resolution national depth data (Denmark 50 m, Finland vector depth areas, German BSH model), routing along buoyed fairways and recommended tracks from OpenSeaMap, and handing the route to a chart app with licensed charts for the approach.
+None at the moment.
