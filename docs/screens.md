@@ -1,12 +1,14 @@
 # Screens
 
-> **Status:** Draft proposal, based on [features.md](features.md). Screen names match the planned Expo Router routes.
+> **Status:** Draft, based on [features.md](features.md). Screen names match the planned Expo Router routes.
+>
+> **Language:** the app UI is German. Labels in this document are in English for readability; the German wording lives in the translation files (`src/i18n/de.json`), see [Localization](features.md#8-localization).
 
 ## Navigation map
 
 ```
 Onboarding (first launch only)
-  └─ Welcome → Location permission → Disclaimer → Create your first boat (skippable)
+  └─ Welcome → Location permission → Disclaimer → Download chart data → Create your first boat (skippable)
 
 Tab bar
 ├─ Conditions                     /
@@ -34,6 +36,7 @@ Boats (boat button in the header of every tab, and the boat chip in Plan)
 └─ Speed model / polar            /boats/[boatId]/polar
 
 Settings (gear icon in the header of every tab)   /settings
+  └─ Charts & offline data        /settings/charts
 ```
 
 **Global elements**
@@ -41,6 +44,7 @@ Settings (gear icon in the header of every tab)   /settings
 - **Header:** every tab shows the **active boat** (name + small icon) on the left, which opens My boats, and the Settings gear on the right.
 - **Activity banner:** while a trip is recording or an anchor watch is running, a slim banner above the tab bar shows it (e.g. "Recording · 12.4 nm · 2:31 h" or "Anchor watch · 18 m from anchor"). Tapping it opens the active screen.
 - **Offline indicator:** small badge in the header when there's no network.
+- **Chart map:** every map in the app uses the same nautical style: OpenStreetMap base map, OpenSeaMap sea marks and EMODnet depth shading with contours, light and night variants. Tapping a sea mark, hazard or depth area opens a **detail sheet** (name, type, light characteristics, charted depth, data source). Attribution is always visible on the map.
 - **Outside supported area:** when the position or a chosen point is outside the Baltic or the Mediterranean, the screen explains that the area isn't supported yet.
 
 Every data screen defines four states: **loading**, **content**, **empty**, **error / offline**.
@@ -53,7 +57,8 @@ Every data screen defines four states: **loading**, **content**, **empty**, **er
 | --- | --- | --- |
 | Welcome | App name, three short benefit lines (conditions, route planning for your boat, logbook & anchor alarm), supported areas: Baltic Sea and Mediterranean | Continue |
 | Location permission | Why location is used (conditions where you are, trip recording, anchor alarm), note that background access is asked later when needed | Allow, Not now |
-| Disclaimer | "Not for navigation": routes ignore depths, shoals, traffic separation schemes and restricted areas | Accept (required) |
+| Disclaimer | Routes and the map are based on open chart data and forecasts, not official nautical charts; the skipper stays responsible | Accept (required) |
+| Download chart data | Choose the first region pack (e.g. Western Baltic) with its size; download in the background | Download, Later |
 | Create your first boat | Short version of the boat wizard: type, length, motor cruising speed, draft | Save, Skip for now |
 
 ---
@@ -105,7 +110,7 @@ Hour-by-hour table for one day: wind, gusts, direction, waves, weather, pressure
 
 **Content:** full-screen map with a bottom sheet.
 
-1. Map: tap to set **Start**, **Destination**, and add **Via points** (numbered). Saved places and the current position can be picked from a list. Drag to move, tap to remove.
+1. Chart map: tap to set **Start**, **Destination**, and add **Via points** (numbered). Saved places and the current position can be picked from a list. Drag to move, tap to remove.
 2. Bottom sheet:
    - Boat (active boat, switchable)
    - Earliest departure (date + time), optional latest arrival
@@ -113,20 +118,21 @@ Hour-by-hour table for one day: wind, gusts, direction, waves, weather, pressure
    - Advanced (collapsed): allow motor yes/no, allow night sailing (default from boat), departure window length (12 / 24 / 48 h)
 3. **Calculate route** button.
 
-**States:** point on land → "Move this point onto the water"; outside supported area → explanation; offline → "Calculation needs a forecast; connect to the internet" (or use a cached forecast if one exists for the area).
+**States:** point on land or in water too shallow for the boat → "Move this point to deeper water" (with the charted depth); point in a prohibited area or traffic separation zone → explanation; no chart data for this region → "Download the region pack first" → Charts & offline data; outside supported area → explanation; offline → "Calculation needs a forecast; connect to the internet" (or use a cached forecast if one exists for the area).
 
-**Calculating:** progress indicator with steps (loading forecast → calculating routes → comparing departure times). Cancel.
+**Calculating:** progress indicator with steps (loading forecast → preparing chart data → calculating routes → comparing departure times). Cancel.
 
 ### Route result (`/plan/[planId]`)
 
 **Content**
 
-1. **Map:** calculated route, coloured by sail (blue) / motor (grey) and with wind arrows along the way; turning points; optional comparison line for the straight route.
-2. **Summary card:** recommended departure, ETA, distance, duration, hours under sail / under motor, fuel needed vs. tank, max wind and waves on the way.
+1. **Chart map:** calculated route, coloured by sail (blue) / motor (grey) and with wind arrows along the way; turning points; sea marks and depths underneath; optional comparison line for the straight route.
+2. **Summary card:** recommended departure, ETA, distance, duration, hours under sail / under motor, fuel needed vs. tank, max wind and waves on the way, **minimum depth under keel**.
 3. **Limit warnings** (if any): "Gusts 32 kn between 15:00 and 17:00 near waypoint 3, above your limit of 25 kn", with suggestions (leave 3 h earlier, stop in harbour X).
-4. **Departure window preview:** small chart of passage duration and max wind over departure times; "See all" → Departure window.
-5. **Legs list:** per leg: course, distance, sail or motor, true wind angle and speed, waves, expected boat speed, ETA. Tap → Leg detail.
-6. Forecast basis: "Forecast from today 06:00 UTC" and a **Recalculate** button.
+4. **Depth & chart notes** (if any): sections with little water under the keel, sections with coarse depth data, traffic lanes crossed, bridges with their clearance. The **harbour approach** at the end is marked "navigate by sight and official chart".
+5. **Departure window preview:** small chart of passage duration and max wind over departure times; "See all" → Departure window.
+6. **Legs list:** per leg: course, distance, sail or motor, true wind angle and speed, waves, minimum depth, expected boat speed, ETA. Tap → Leg detail.
+7. Data basis: "Forecast from today 06:00 UTC", chart pack and its data date, and a **Recalculate** button.
 
 **Actions:** Recalculate, Edit inputs (→ New plan with values), Compare with straight route, Open checklist, **Start trip** (→ Active trip with this route), Share/Export (GPX of the route).
 
@@ -138,7 +144,7 @@ Chart and list of departure times across the window: for each, duration, ETA, ma
 
 ### Leg detail (`/plan/[planId]/legs/[leg]`)
 
-One leg: map section, course, distance, sail/motor, point of sail (close-hauled, beam reach, …), wind and waves over time, expected speed from the polar.
+One leg: chart section, course, distance, sail/motor, point of sail (close-hauled, beam reach, …), wind and waves over time, **depth profile** along the leg (incl. forecast water level in the Baltic), sea marks passed, expected speed from the speed model.
 
 ### Checklist (`/plan/checklist`)
 
@@ -194,7 +200,7 @@ Season and boat selector; totals (trips, nm, hours under way, under sail vs. mot
 ### Anchor setup (`/anchor/setup`)
 
 1. Anchor position: "At my position" or "Offset" (distance and bearing from the boat).
-2. Radius: slider, or calculate from depth (entered) and the active boat's chain length and boat length.
+2. Radius: slider, or calculate from the depth (pre-filled from the chart data, editable) and the active boat's chain length and boat length.
 3. Preview on the map.
 4. **Start watch** → requests background location and notification permission the first time.
 
@@ -216,23 +222,27 @@ Full-screen red alert shown when the alarm fires (and as a notification when the
 
 ### Boat detail (`/boats/[boatId]`)
 
-Overview grouped like the editor: General, Dimensions, Sailing performance (polar chart preview + source: imported / estimated), Motor, Sailing preferences, Comfort limits, Anchoring. Statistics for this boat (trips, nm). Actions: Edit, Set as active, View speed model.
+Overview grouped like the editor: General, Dimensions, Sailing performance (speed model chart preview + source: estimated / learned / imported), Motor, Sailing preferences, Safety margins, Comfort limits, Anchoring. Statistics for this boat (trips, nm). Actions: Edit, Set as active, View speed model.
 
 ### Boat editor (`/boats/[boatId]/edit`, `/boats/new`)
 
 **New boat = wizard** (each step can be skipped except step 1):
 
-1. **Basics:** name, type (sailing yacht / catamaran / motor sailer), length overall, draft
-2. **Motor:** cruising speed, maximum speed, fuel consumption, tank capacity
-3. **Sailing:** waterline length, displacement, performance (cruising / performance / heavy), reefing wind speed, or **import polar**
-4. **Preferences & limits:** motor when sailing speed below X kn, closest angle to the wind, night sailing allowed, max hours per day, max wind / gusts / waves
+1. **Basics:** name, type (sailing yacht / catamaran / motor sailer), length overall, draft, air draft, motor cruising speed
+2. **Motor:** maximum speed, fuel consumption, tank capacity
+3. **Sailing:** waterline length, displacement, performance (cruising / performance / heavy), reefing wind speed → preview of the estimated speed model
+4. **Preferences, safety & limits:** motor when sailing speed below X kn, closest angle to the wind, night sailing allowed, max hours per day; minimum depth under keel, clearance above mast, distance from hazards; max wind / gusts / waves
 5. **Anchoring:** chain length, rope length, anchor type and weight
 
 **Edit = one scrolling form** with the same groups. Fields show units from Settings; sensible defaults are pre-filled and marked "estimated".
 
-### Speed model / polar (`/boats/[boatId]/polar`)
+### Speed model (`/boats/[boatId]/polar`)
 
-Polar chart (boat speed over true wind angle for several wind speeds) and the same data as a table. Source shown: estimated / imported / learned. Actions: **Import polar file**, adjust performance setting, reset to estimate. Motor speed shown as a reference line.
+Polar chart (boat speed over true wind angle for several wind speeds) and the same data as a table. Motor speed shown as a reference line. Source shown: estimated / learned / imported.
+
+- **Adjust:** performance setting and a simple factor ("my boat is 10 % slower than estimated").
+- **Learned from trips:** when enough recorded trips exist, a card shows the suggested correction (estimated vs. actual speeds per wind angle) and how many trips it's based on. **Apply** or **Dismiss**.
+- More: import polar file (optional), reset to estimate.
 
 ---
 
@@ -242,12 +252,17 @@ Grouped list, each group opens a sub-screen or inline controls:
 
 - **Units:** wind, distance, depth, temperature, fuel
 - **Saved places**
-- **Offline data:** download coastline data for the Baltic / Mediterranean, with size and status
+- **Charts & offline data** → Charts & offline data
 - **Logbook recording:** GPS interval
 - **Anchor alarm:** default alarm delay, sound
 - **Appearance:** system / light / dark
+- **Language:** hidden while only German exists
 - **Data:** export all, delete all
-- **About:** version, data sources and licences, disclaimer
+- **About:** version, data sources, licences and attributions (OpenStreetMap, OpenSeaMap, EMODnet, Open-Meteo), disclaimer
+
+### Charts & offline data (`/settings/charts`)
+
+List of region packs grouped by area (Baltic: Western Baltic, Central Baltic, Gulf of Bothnia/Finland; Mediterranean: Western Med, Adriatic, Ionian & Aegean). Each shows status (not downloaded / downloaded / update available), size and data date. Actions: **Download**, **Update**, **Delete**. Download progress continues in the background. Total storage used at the bottom.
 
 ---
 
@@ -255,6 +270,9 @@ Grouped list, each group opens a sub-screen or inline controls:
 
 The skeleton has the four tabs with placeholder screens. To match this spec we'll add:
 
+- Translation setup (`src/i18n/`) and German texts for all existing screens
+- Development build with the offline map library (MapLibre) instead of Expo Go
+- Shared chart map component with the nautical style
 - Boats section (`/boats/...`) and the active-boat button in the tab headers
 - Settings route and a gear button in the tab headers
 - Nested stacks inside the Plan, Logbook and Anchor tabs (`(tabs)/plan/_layout.tsx` etc.)
