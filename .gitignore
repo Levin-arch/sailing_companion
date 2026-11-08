@@ -59,3 +59,15 @@ local.properties
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
+
+# Expo (from create-expo-app)
+expo-env.d.ts
+.kotlin/
+*.orig.*
+.metro-health-check*
+*.tsbuildinfo
+.env*.local
+
+# Generated native folders (Continuous Native Generation)
+/ios
+/android
