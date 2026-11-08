@@ -1,0 +1,61 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors & IDEs
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Node / JavaScript
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+
+# React Native / Expo
+.expo/
+web-build/
+*.jks
+*.p8
+*.p12
+*.keystore
+*.mobileprovision
+
+# iOS
+ios/Pods/
+*.xcworkspace/xcuserdata/
+DerivedData/
+
+# Android
+android/.gradle/
+android/app/build/
+local.properties
+*.apk
+*.aab
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
